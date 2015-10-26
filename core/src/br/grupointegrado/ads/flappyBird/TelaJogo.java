@@ -39,6 +39,8 @@ public class TelaJogo extends TelaBase {
 
         initChao();
         initPassaro();
+
+        new Obstaculo(mundo, camera, null);
     }
 
     private void initChao() {
@@ -55,10 +57,22 @@ public class TelaJogo extends TelaBase {
         Gdx.gl.glClearColor(.25f, .25f, .25f, 1); // limpa a tela e pinta a cor de fundo
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // mantem o buffer de cores
 
+        capturaTeclas();
         atualizar(delta);
         renderizar(delta);
 
+
         debug.render(mundo, camera.combined.cpy().scl(Util.PIXEL_METRO));
+    }
+
+    private boolean pulando = false;
+
+    private void capturaTeclas() {
+        pulando = false;
+
+        if(Gdx.input.justTouched()){
+            pulando = true;
+        }
     }
 
     /**
@@ -66,18 +80,30 @@ public class TelaJogo extends TelaBase {
      * @param delta
      */
     private void atualizar(float delta) {
+
+        passaro.atualizar(delta);
         mundo.step(1f / 60f, 6, 2);
+
+        atualizarCamera();
         atualizarChao();
+
+        if(pulando){
+            passaro.pular();
+        }
+    }
+
+    private void atualizarCamera() {
+        camera.position.x = (passaro.getCorpo().getPosition().x + 34 / Util.PIXEL_METRO) * Util.PIXEL_METRO;
+        camera.update();
     }
 
     /**
      * Atualiza a posicao do chao para acompanhar o passaro
      */
     private void atualizarChao() {
-        float largura = camera.viewportWidth / Util.PIXEL_METRO;
-        Vector2 posicao = chao.getPosition();
-        posicao.x = largura / 2;
-        chao.setTransform(posicao, 0);
+        Vector2 posicao = passaro.getCorpo().getPosition();
+
+        chao.setTransform(posicao.x, 0, 0);
     }
 
 
