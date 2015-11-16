@@ -18,10 +18,9 @@ public class Obstaculo {
     private Body corpoCima, corpoBaixo;
     private float posX;
     private float posYCima, posYBaixo;
-    private float largura, altura;
+    private float altura, largura;
     private boolean passou;
-
-    private Obstaculo ultimoObstaculo; // ultimo antes do atual
+    private Obstaculo ultimoObstaculo; // ultima antes do atual
 
     public Obstaculo(World mundo, OrthographicCamera camera, Obstaculo ultimoObstaculo){
         this.mundo = mundo;
@@ -31,6 +30,7 @@ public class Obstaculo {
         initPosicao();
         initCorpoCima();
         initCorpoBaixo();
+
 
     }
 
@@ -60,19 +60,19 @@ public class Obstaculo {
         largura = 40 / Util.PIXEL_METRO;
         altura = camera.viewportHeight / Util.PIXEL_METRO;
 
-        float xInicial = largura;
+        float xInicial = largura + (camera.viewportWidth / 2 / Util.PIXEL_METRO);
         if (ultimoObstaculo != null)
             xInicial = ultimoObstaculo.getPosX();
 
-            posX = xInicial + 8; // 4 é o espaco entre os obstaculos
+        posX = xInicial + 4; // 4 é o espaço entre os obstaculos
 
-            float parcela = (altura - Util.ALTURA_CHAO) / 6; // tamanho da tela dividido por 6, para encontrar a posicao y do obstaculo
+        float parcela = (altura - Util.ALTURA_CHAO) /6; // tamanho da tela dividido por 6 para encontrar a posisao Y do obstaculo
 
-            int multiplicador = MathUtils.random(1, 3); // numero aleatorio entre os canos
+        int multiplicador = MathUtils.random(1,3); //numero aleatorio entre 1 e 3
 
-            posYBaixo = Util.ALTURA_CHAO + (parcela * multiplicador) - (altura / 2);
+        posYBaixo = Util.ALTURA_CHAO + (parcela * multiplicador) - (altura / 2);
+        posYCima = posYBaixo + altura + 2f; // 3f espaço entre os canos
 
-            posYCima = posYBaixo + altura + 2f;
     }
 
     public float getPosX(){
@@ -82,6 +82,34 @@ public class Obstaculo {
     public void remover(){
         mundo.destroyBody(corpoCima);
         mundo.destroyBody(corpoBaixo);
+    }
+
+    public float getAltura() {
+        return altura;
+    }
+
+    public void setAltura(float altura) {
+        this.altura = altura;
+    }
+
+    public float getLargura() {
+        return largura;
+    }
+
+    public void setLargura(float largura) {
+        this.largura = largura;
+    }
+
+    public void setPosX(float posX) {
+        this.posX = posX;
+    }
+
+    public boolean isPassou() {
+        return passou;
+    }
+
+    public void setPassou(boolean passou) {
+        this.passou = passou;
     }
 
 }
